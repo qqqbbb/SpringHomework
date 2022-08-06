@@ -27,6 +27,9 @@ public class CalculatorService
 
     public String divideNumbers(int num1, int num2)
     {
+        if (num2 == 0)
+            throw new IllegalArgumentException();
+
         return num1 + " / " + num2 + " = " + ((float)num1 / (float)num2);
     }
 }
