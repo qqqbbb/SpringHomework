@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 
+@RequestMapping(path="/employee")
 @RestController
 public class EmployeeController
 {
@@ -15,25 +16,25 @@ public class EmployeeController
         this.employeeService = employeeService;
     }
 
-    @RequestMapping(path="/employee/add")
+    @RequestMapping(path="/add")
     public Employee addEmployee(@RequestParam(name="firstName") String firstName, @RequestParam(name="lastName")String lastName)
     {
         return employeeService.addEmployee(firstName, lastName);
     }
 
-    @RequestMapping(path="/employee/remove")
+    @RequestMapping(path="/remove")
     public Employee removeEmployee(@RequestParam(name="firstName") String firstName, @RequestParam(name="lastName")String lastName)
     {
         return employeeService.removeEmployee(firstName, lastName);
     }
 
-    @RequestMapping(path="/employee/find")
+    @RequestMapping(path="/find")
     public Employee findEmployee(@RequestParam(name="firstName") String firstName, @RequestParam(name="lastName")String lastName)
     {
         return employeeService.findEmployee(firstName, lastName);
     }
 
-    @RequestMapping(path="/employee/print")
+    @RequestMapping(path="/print")
     public ArrayList<Employee> printEmployees()
     {
         return employeeService.printEmployees();
