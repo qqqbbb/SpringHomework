@@ -43,14 +43,13 @@ public class EmployeeService
         return employees.get(0);
     }
 
-    public List<String>  GetAllEmployeesInDepartment(int department)
+    public List<Employee>  GetAllEmployeesInDepartment(int department)
     {
         if (EmployeeBook.employees.keySet().isEmpty())
             throw new RuntimeException("No employees");
 
-        List<String> employees = EmployeeBook.employees.values().stream()
+        List<Employee> employees = EmployeeBook.employees.values().stream()
                 .filter(e -> e.getDepartment() == department)
-                .map(e -> e.toString())
                 .collect(Collectors.toList());
 
         if (employees.isEmpty())

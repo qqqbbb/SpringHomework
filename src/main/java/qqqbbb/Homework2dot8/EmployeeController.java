@@ -30,12 +30,15 @@ public class EmployeeController
         return employeeService.GetEmployeeWithLowestSalaryInDepartment(department);
     }
 
-    @GetMapping(path="/all")
-    public List<String> GetAllEmployeesInDepartment(@RequestParam(name = "departmentId", required = false) Integer department)
+    @GetMapping(value = "/all", params = "departmentId")
+    public List<Employee> GetAllEmployeesInDepartment(@RequestParam(name = "departmentId") Integer department)
     {
-        if (department != null)
-            return employeeService.GetAllEmployeesInDepartment(department);
-        else
+        return employeeService.GetAllEmployeesInDepartment(department);
+    }
+
+    @GetMapping(path="/all")
+    public List<String> GetAllEmployeesInDepartment()
+    {
             return employeeService.GetAllEmployeesByDepartment();
     }
 

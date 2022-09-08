@@ -30,15 +30,6 @@ public class Main
 //        EmployeeBook.printAverageSalaryInDepartment(1);
 //        EmployeeBook.printEmployeesWithSalaryHigherThan(21111);
 
-        Map<String, Integer> map = new HashMap<>();
-        map.put("three", 3);
-        map.put("one", 1);
-        map.put("zero", 0);
-        map.put("two", 2);
-//        map.remove("zero");
-//        map.put("one", null);
-//        map.values().stream()
-//                .sorted()
-//                .forEach(e -> System.out.println(e));
+
     }
 }
