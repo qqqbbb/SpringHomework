@@ -9,6 +9,15 @@ import java.util.List;
 @SessionScope
 public class StoreBasket
 {
-    public List<Integer> itemIDs = new ArrayList<>();
+    private List<Integer> itemIDs = new ArrayList<>();
 
+    public List<Integer> getItems()
+    {
+        return itemIDs;
+    }
+
+    public void addItems(List<Integer> itemIDs)
+    {
+        this.itemIDs.addAll(itemIDs);
+    }
 }

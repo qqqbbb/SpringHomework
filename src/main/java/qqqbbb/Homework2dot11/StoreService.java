@@ -10,14 +10,12 @@ public class StoreService
 
     public String addItem(List<Integer> idList)
     {
-//        if (storeBasket == null)
-//            return "storeBasket == null ";
-        storeBasket.itemIDs.addAll(idList);
+        storeBasket.addItems(idList);
         return "Added to basket: " + idList;
     }
 
     public String getStoreOrder()
     {
-        return "Items in basket: " + storeBasket.itemIDs.toString();
+        return "Items in basket: " + storeBasket.getItems().toString();
     }
 }
