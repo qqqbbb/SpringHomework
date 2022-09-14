@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 @Service
 public class EmployeeService
 {
-    public Employee GetEmployeeWithHighestSalaryInDepartment(int department)
+    public Employee getEmployeeWithHighestSalaryInDepartment(int department)
     {
         if (EmployeeBook.employees.keySet().isEmpty())
             throw new RuntimeException("No employees");
@@ -27,7 +27,7 @@ public class EmployeeService
         return employees.get(employees.size() -1);
     }
 
-    public Employee GetEmployeeWithLowestSalaryInDepartment(int department)
+    public Employee getEmployeeWithLowestSalaryInDepartment(int department)
     {
         if (EmployeeBook.employees.keySet().isEmpty())
             throw new RuntimeException("No employees");
@@ -43,7 +43,7 @@ public class EmployeeService
         return employees.get(0);
     }
 
-    public List<Employee>  GetAllEmployeesInDepartment(int department)
+    public List<Employee> getAllEmployeesInDepartment(int department)
     {
         if (EmployeeBook.employees.keySet().isEmpty())
             throw new RuntimeException("No employees");
@@ -58,7 +58,7 @@ public class EmployeeService
         return employees;
     }
 
-    public List<String> GetAllEmployeesByDepartment()
+    public List<String> getAllEmployeesByDepartment()
     {
         if (EmployeeBook.employees.keySet().isEmpty())
             throw new RuntimeException("No employees");

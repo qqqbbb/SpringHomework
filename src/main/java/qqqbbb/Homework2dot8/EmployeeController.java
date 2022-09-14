@@ -19,27 +19,27 @@ public class EmployeeController
     }
 
     @GetMapping(path="/max-salary")
-    public Employee GetEmployeeWithHighestSalaryInDepartment(@RequestParam(name = "departmentId") int department)
+    public Employee getEmployeeWithHighestSalaryInDepartment(@RequestParam(name = "departmentId") int department)
     {
-        return employeeService.GetEmployeeWithHighestSalaryInDepartment(department);
+        return employeeService.getEmployeeWithHighestSalaryInDepartment(department);
     }
 
     @GetMapping(path="/min-salary")
-    public Employee GetEmployeeWithLowestSalaryInDepartment(@RequestParam(name = "departmentId") int department)
+    public Employee getEmployeeWithLowestSalaryInDepartment(@RequestParam(name = "departmentId") int department)
     {
-        return employeeService.GetEmployeeWithLowestSalaryInDepartment(department);
+        return employeeService.getEmployeeWithLowestSalaryInDepartment(department);
     }
 
     @GetMapping(value = "/all", params = "departmentId")
-    public List<Employee> GetAllEmployeesInDepartment(@RequestParam(name = "departmentId") Integer department)
+    public List<Employee> getAllEmployeesInDepartment(@RequestParam(name = "departmentId") Integer department)
     {
-        return employeeService.GetAllEmployeesInDepartment(department);
+        return employeeService.getAllEmployeesInDepartment(department);
     }
 
     @GetMapping(path="/all")
-    public List<String> GetAllEmployeesInDepartment()
+    public List<String> getAllEmployeesInDepartment()
     {
-            return employeeService.GetAllEmployeesByDepartment();
+            return employeeService.getAllEmployeesByDepartment();
     }
 
 }

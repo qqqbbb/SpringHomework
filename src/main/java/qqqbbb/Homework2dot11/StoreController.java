@@ -15,13 +15,12 @@ public class StoreController
     public StoreController(StoreService storeService)
     {
         this.storeService = storeService;
-        this.storeService.storeBasket = new StoreBasket();
     }
 
     @GetMapping(path="/add")
-    public String addItem(@RequestParam List<Integer> id)
+    public String addItems(@RequestParam List<Integer> id)
     {
-        return storeService.addItem(id);
+        return storeService.addItems(id);
     }
 
     @GetMapping(path="/get")
