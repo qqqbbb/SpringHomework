@@ -4,13 +4,13 @@ import java.util.Objects;
 
 public class Employee
 {
-    String firstName;
-    String middleName;
-    String lastName;
-    int department;
-    int salary;
-    int id;
-    static int count;
+    private String firstName;
+    private String middleName;
+    private String lastName;
+    private int department;
+    private int salary;
+    private int id;
+//    static int count;
 
     public Employee(String firstName, String lastName)
     {
@@ -25,7 +25,7 @@ public class Employee
         this.lastName = lastName;
         this.department = department;
         this.salary = salary;
-        this.id = count;
+//        this.id = count;
 //        count++;
     }
 
@@ -55,8 +55,8 @@ public class Employee
 
     public String getFullName()
     {
-        return getFirstName() + ' ' + getLastName();
-//        return getFirstName() + ' ' + getMiddleName() + ' ' + getLastName();
+//        return getFirstName() + ' ' + getLastName();
+        return getFirstName() + ' ' + getMiddleName() + ' ' + getLastName();
     }
 
     public String getFirstName()
@@ -89,11 +89,6 @@ public class Employee
         return id;
     }
 
-    public static int getCount()
-    {
-        return count;
-    }
-
     public void setDepartment(int department)
     {
         this.department = department;
@@ -102,5 +97,10 @@ public class Employee
     public void setSalary(int salary)
     {
         this.salary = salary;
+    }
+
+    public void setId(int id)
+    {
+        this.id = id;
     }
 }

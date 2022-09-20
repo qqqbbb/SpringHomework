@@ -38,7 +38,7 @@ public class EmployeeController
     @RequestMapping(path="/print")
     public List<Employee> printEmployees()
     {
-        return employeeService.printEmployees();
+        return employeeService.getEmployees();
     }
 
 

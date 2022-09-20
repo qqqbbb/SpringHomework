@@ -1,66 +1,133 @@
 package qqqbbb.Homework2dot13;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Repository;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Repository
 public class EmployeeBook
 {
-    static HashMap<String, Employee> employees = new HashMap<>();
+    private HashMap<String, Employee> repository;
 
-    public static void addNewEmployee(String firstName, String middleName, String lastName, int department, int salary)
+    public EmployeeBook()
     {
-        Employee newEmployee = new Employee(firstName, middleName, lastName, department, salary);
-        String fullName = newEmployee.getFullName();
-        if (!employees.containsKey(fullName))
-        {
-            employees.put(fullName, newEmployee);
-            Employee.count ++;
-        }
-        else
-            throw new IllegalArgumentException(fullName + " already in database");
+        this.repository = new HashMap<>();
     }
 
-    public static void removeEmployee(String firstName, String middleName, String lastName)
+    public boolean isEmpty()
     {
+        return repository.isEmpty();
+    }
+
+    public int size()
+    {
+        return repository.size();
+    }
+
+    private String validateName(String name)
+    {
+//        System.out.println("validateName " + name);
+        if (!StringUtils.isAlpha(name))
+            throw new BadRequestException();
+
+        name = StringUtils.lowerCase(name);
+        name = StringUtils.capitalize(name);
+        return name;
+    }
+
+    public Employee addEmployee(String firstName, String lastName)
+    {
+        firstName = validateName(firstName);
+        lastName = validateName(lastName);
+        String fullName = firstName + ' ' + lastName;
+
+        if (repository.containsKey(fullName))
+            throw new EmployeeAlreadyAddedException();
+
+        Employee newEmployee = new Employee(firstName, lastName);
+        newEmployee.setId(repository.size());
+        repository.put(fullName, newEmployee);
+        return newEmployee;
+    }
+
+    public Employee addEmployee(String firstName, String middleName, String lastName, int department, int salary)
+    {
+        firstName = validateName(firstName);
+        middleName = validateName(middleName);
+        lastName = validateName(lastName);
         String fullName = firstName + ' ' + middleName + ' ' + lastName;
-        Employee employee = employees.get(fullName);
-        if (employees.containsKey(fullName))
+
+        if (repository.containsKey(fullName))
+            throw new EmployeeAlreadyAddedException();
+
+        Employee newEmployee = new Employee(firstName, middleName, lastName, department ,salary);
+        newEmployee.setId(repository.size());
+        repository.put(fullName, newEmployee);
+        return newEmployee;
+    }
+
+    public Employee removeEmployee(String firstName, String lastName)
+    {
+        firstName = validateName(firstName);
+        lastName = validateName(lastName);
+        String fullName = firstName + ' ' + lastName;
+
+        if (repository.containsKey(fullName))
         {
-            employees.remove(fullName);
-            Employee.count --;
+            Employee employee = repository.get(fullName);
+            repository.remove(fullName);
+            return employee;
         }
         else
             throw new IllegalArgumentException("No employee with name " + fullName);
     }
 
-    public static void removeEmployee(int id)
+    public Employee removeEmployee(int id)
     {
+        Employee employee = null;
         String fullName = null;
-        for (Employee employee: employees.values())
+        for (Employee e: repository.values())
         {
-            if (employee.id == id)
+            if (e.getId() == id)
             {
-                fullName = employee.getFullName();
+                employee = e;
+                fullName = e.getFullName();
                 break;
             }
         }
         if (fullName != null)
         {
-            employees.remove(fullName);
-            Employee.count --;
+            repository.remove(fullName);
+            return employee;
         }
         else
             throw new IllegalArgumentException("No employee with ID " + id);
     }
 
-    public static void modifyEmployeeData(String firstName, String middleName, String lastName, int newDepartment, int newSalary)
+    public Employee findEmployee(String firstName, String lastName)
     {
+        firstName = validateName(firstName);
+        lastName = validateName(lastName);
+        String fullName = firstName + ' ' + lastName;
+        if (repository.containsKey(fullName))
+            return repository.get(fullName);
+
+        throw new EmployeeNotFoundException();
+    }
+
+    public void modifyEmployeeData(String firstName, String middleName, String lastName, int newDepartment, int newSalary)
+    {
+        firstName = validateName(firstName);
+        middleName = validateName(middleName);
+        lastName = validateName(lastName);
         String fullName = firstName + ' ' + middleName + ' ' + lastName;
 
-        if (employees.containsKey(fullName))
+        if (repository.containsKey(fullName))
         {
-            Employee employee = employees.get(fullName);
+            Employee employee = repository.get(fullName);
             employee.setDepartment(newDepartment);
             employee.setSalary(newSalary);
         }
@@ -68,101 +135,82 @@ public class EmployeeBook
             throw new IllegalArgumentException("No employee with name " + fullName);
     }
 
-    public static void printEmployeesByDepartment()
+    public List<Employee> getEmployees()
     {
-        if (employees.keySet().isEmpty())
+        if (repository.keySet().isEmpty())
         {
-            System.out.println("No employees");
-            return;
+            System.out.println("employees repo is empty ");
+            throw new EmployeeNotFoundException();
         }
-        employees.values().stream()
+
+        return repository.values().stream()
                 .sorted(Comparator.comparingInt(Employee::getDepartment))
-                .forEach(e -> System.out.println(e));
+                .collect(Collectors.toList());
     }
 
-    public static void printEmployeesData()
+    public int getMonthlySalaryTotal()
     {
-        if (employees.keySet().isEmpty())
-        {
-            System.out.println("No employees");
-            return;
-        }
-        for (Employee employee: employees.values())
-            System.out.println(employee);
-    }
+        if (repository.keySet().isEmpty())
+            throw new EmployeeNotFoundException();
 
-    public static void printMonthlySalaryTotal()
-    {
-        if (employees.keySet().isEmpty())
-        {
-            System.out.println("No employees");
-            return;
-        }
-        int total = employees.values().stream()
+        return repository.values().stream()
                 .map(e -> e.getSalary())
                 .reduce(0, (Integer a, Integer b) -> a + b);
-
-        System.out.println("Total monthly salary: " + total);
     }
 
-    public static void printLowestSalary()
+    public int getLowestSalary()
     {
-        if (employees.keySet().isEmpty())
-        {
-            System.out.println("No employees");
-            return;
-        }
-        Stream stream = employees.values().stream()
+        if (repository.keySet().isEmpty())
+            throw new EmployeeNotFoundException();
+
+        Stream stream = repository.values().stream()
                 .sorted(Comparator.comparingInt(Employee::getSalary));
 
         Optional<Employee> employeeOptional =  stream.findFirst();
         Employee employee = employeeOptional.get();
-        System.out.println(employee.getFullName() + " is on the lowest monthly salary of " + employee.getSalary());
+        return employee.getSalary();
+//        System.out.println(employee.getFullName() + " is on the lowest monthly salary of " + employee.getSalary());
     }
 
-    public static void printHighestSalary()
+    public int getHighestSalary()
     {
-        if (employees.keySet().isEmpty())
-        {
-            System.out.println("No employees");
-            return;
-        }
-        List<Employee> list = employees.values().stream()
+        if (repository.keySet().isEmpty())
+            throw new EmployeeNotFoundException();
+
+        List<Employee> list = repository.values().stream()
                 .sorted(Comparator.comparingInt(Employee::getSalary))
                 .collect(Collectors.toList());
 
         Employee employee = list.get(list.size() -1);
-        System.out.println(employee.getFullName() + " is on the highest monthly salary of " + employee.getSalary());
+        return employee.getSalary();
+//        System.out.println(employee.getFullName() + " is on the highest monthly salary of " + employee.getSalary());
     }
 
-    public static void printAverageSalary()
+    public int getAverageSalary()
     {
-        if (employees.keySet().isEmpty())
-        {
-            System.out.println("No employees");
-            return;
-        }
-        int total = employees.values().stream()
+        if (repository.keySet().isEmpty())
+            throw new EmployeeNotFoundException();
+
+        int total = repository.values().stream()
                 .map(e -> e.getSalary())
                 .reduce(0, (Integer a, Integer b) -> a + b);
 
-        System.out.println("Average monthly salary is " + total/ Employee.count);
+//        System.out.println("Average monthly salary is " + total/ Employee.count);
+        return total / repository.size();
     }
 
-    public static void printEmployeesNames()
+    public void printEmployeesNames()
     {
-        if (employees.keySet().isEmpty())
-        {
-            System.out.println("No employees");
-            return;
-        }
-        employees.values().stream()
+        if (repository.keySet().isEmpty())
+            throw new EmployeeNotFoundException();
+
+        repository.values().stream()
                 .forEach(e -> System.out.println(e.getFullName()));
     }
 
-    public static void changeSalary(float percent)
+    public void changeSalary(float percent)
     {
-        for (Map.Entry<String, Employee> entry : employees.entrySet())
+        for (Map.Entry<String, Employee> entry : repository.entrySet())
         {
             Employee employee = entry.getValue();
             if (employee == null)
@@ -173,56 +221,29 @@ public class EmployeeBook
         }
     }
 
-    public static void printLowestSalaryInDepartment(int department)
+    public Employee getEmployeeWithLowestSalaryInDepartment(int department)
     {
-        if (employees.keySet().isEmpty())
-        {
-            System.out.println("No employees");
-            return;
-        }
-        Stream<Employee> stream = employees.values().stream()
-                .filter(e -> e.getDepartment() == department)
-                .sorted(Comparator.comparingInt(Employee::getSalary));
+        if (repository.keySet().isEmpty())
+            throw new EmployeeNotFoundException();
 
-        Optional<Employee> employeeOptional = stream.findFirst();
-        if (employeeOptional.isEmpty())
-        {
-            System.out.println("No employees in department " + department);
-            return;
-        }
-        Employee employee = employeeOptional.get();
-        System.out.println(employee.getFullName() + " from " + department + " department is on the lowest monthly salary of " + employee.getSalary());
-    }
-
-    public static void printHighestSalaryInDepartment(int department)
-    {
-        if (employees.keySet().isEmpty())
-        {
-            System.out.println("No employees");
-            return;
-        }
-        List<Employee> salaries = employees.values().stream()
+        List<Employee> employees = repository.values().stream()
                 .filter(e -> e.getDepartment() == department)
                 .sorted(Comparator.comparingInt(Employee::getSalary))
                 .collect(Collectors.toList());
 
-        if (salaries.isEmpty())
-        {
-            System.out.println("No employees in department " + department);
-            return;
-        }
-        Employee employee = salaries.get(salaries.size() -1);
-        System.out.println(employee.getFullName() + " from " + department + " department is on the highest monthly salary of " + employee.getSalary());
+        if (employees.isEmpty())
+            throw new RuntimeException("No employees in department " + department);
+
+        return employees.get(0);
+//        System.out.println(employee.getFullName() + " from " + department + " department is on the lowest monthly salary of " + employee.getSalary());
     }
 
-    public static void printSalaryTotalInDepartment(int department)
+    public void printSalaryTotalInDepartment(int department)
     {
-        if (employees.keySet().isEmpty())
-        {
-            System.out.println("No employees");
-            return;
-        }
-        int total = employees.values().stream()
+        if (repository.keySet().isEmpty())
+            throw new EmployeeNotFoundException();
+
+        int total = repository.values().stream()
                 .filter(e -> e.getDepartment() == department)
                 .map(e -> e.getSalary())
                 .reduce(0, (Integer a, Integer b) -> a + b);
@@ -230,14 +251,12 @@ public class EmployeeBook
         System.out.println("Total monthly salary in " + department + " department is " + total);
     }
 
-    public static void printAverageSalaryInDepartment(int department)
+    public void printAverageSalaryInDepartment(int department)
     {
-        if (employees.keySet().isEmpty())
-        {
-            System.out.println("No employees");
-            return;
-        }
-        List<Employee> employeesInDepartment = employees.values().stream()
+        if (repository.keySet().isEmpty())
+            throw new EmployeeNotFoundException();
+
+        List<Employee> employeesInDepartment = repository.values().stream()
                 .filter(e -> e.getDepartment() == department)
                 .collect(Collectors.toList());
 
@@ -249,9 +268,9 @@ public class EmployeeBook
         System.out.println("Average monthly salary in department " + department + " is " + average);
     }
 
-    public static void changeSalaryInDepartment(float percent, int department)
+    public void changeSalaryInDepartment(float percent, int department)
     {
-        for (Map.Entry<String, Employee> entry : employees.entrySet())
+        for (Map.Entry<String, Employee> entry : repository.entrySet())
         {
             Employee employee = entry.getValue();
             if (employee == null)
@@ -267,12 +286,10 @@ public class EmployeeBook
 
     public void printEmployeesDataInDepartment(int department)
     {
-        if (employees.keySet().isEmpty())
-        {
-            System.out.println("No employees");
-            return;
-        }
-        List<Employee> employeesInDepartment = employees.values().stream()
+        if (repository.keySet().isEmpty())
+            throw new EmployeeNotFoundException();
+
+        List<Employee> employeesInDepartment = repository.values().stream()
                 .filter(e -> e.getDepartment() == department)
                 .collect(Collectors.toList());
 
@@ -286,14 +303,12 @@ public class EmployeeBook
             System.out.println(employee.toString());
     }
 
-    public static void printEmployeesWithSalaryLowerThan(int salary)
+    public void printEmployeesWithSalaryLowerThan(int salary)
     {
-        if (employees.keySet().isEmpty())
-        {
-            System.out.println("No employees");
-            return;
-        }
-        List<Employee> employeesWithLowSalary = employees.values().stream()
+        if (repository.keySet().isEmpty())
+            throw new EmployeeNotFoundException();
+
+        List<Employee> employeesWithLowSalary = repository.values().stream()
                 .filter(e -> e.getSalary() < salary)
                 .collect(Collectors.toList());
 
@@ -307,14 +322,12 @@ public class EmployeeBook
             System.out.println(employee);
     }
 
-    public static void printEmployeesWithSalaryHigherThan(int salary)
+    public void printEmployeesWithSalaryHigherThan(int salary)
     {
-        if (employees.keySet().isEmpty())
-        {
-            System.out.println("No employees");
-            return;
-        }
-        List<Employee> employeesWithHighSalary = employees.values().stream()
+        if (repository.keySet().isEmpty())
+            throw new EmployeeNotFoundException();
+
+        List<Employee> employeesWithHighSalary = repository.values().stream()
                 .filter(e -> e.getSalary() > salary)
                 .collect(Collectors.toList());
 

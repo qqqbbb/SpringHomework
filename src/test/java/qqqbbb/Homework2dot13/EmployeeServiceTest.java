@@ -1,72 +1,73 @@
 package qqqbbb.Homework2dot13;
 
 import org.junit.jupiter.api.Test;
-import java.util.HashMap;
-import java.util.List;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 
+//@ExtendWith(MockitoExtension.class)
 class EmployeeServiceTest
 {
-    private final EmployeeService employeeService = new EmployeeService();
+//    @Mock
+    EmployeeBook employeeBook = new EmployeeBook();
+    private final EmployeeService employeeService = new EmployeeService(employeeBook);
 
     @Test
     void addEmployee()
     {
+//        when(employeeService.addEmployee("zzz", "xxx", "ccc", 1, 333)).thenReturn(employee3);
         Employee employee = employeeService.addEmployee("qWe", "erY");
         assertEquals(employee, new Employee("Qwe", "Ery"));
         assertThrows(BadRequestException.class, () -> employeeService.addEmployee("1", "erY"));
         assertThrows(BadRequestException.class, () -> employeeService.addEmployee(null, "erY"));
         assertThrows(BadRequestException.class, () -> employeeService.addEmployee("erY", "  "));
         assertThrows(BadRequestException.class, () -> employeeService.addEmployee("erY", ""));
-        assert (EmployeeBook.employees.containsValue(employee));
-        assertEquals(Employee.count , 1);
-        Employee.count = 0;
-        EmployeeBook.employees = new HashMap<>();
+//        assert (EmployeeBook.repository.containsValue(employee));
+        assertEquals(employeeBook.size(), 1);
+        employeeBook = new EmployeeBook();
     }
 
     @Test
     void removeEmployee()
     {
-        Employee employee = new Employee("Qqq", "Www");
-        EmployeeBook.employees.put("Qqq Www", employee);
-        Employee.count ++;
+        Employee employee = employeeService.addEmployee("Qqq", "Www");
         assertThrows(IllegalArgumentException.class, () -> employeeService.removeEmployee("Www", "Qqq"));
         Employee removedEmployee = employeeService.removeEmployee("Qqq", "Www");
         assertEquals(employee, removedEmployee);
-        assertEquals(Employee.count , 0);
-        assertEquals(EmployeeBook.employees.size() , 0);
-        Employee.count = 0;
-        EmployeeBook.employees = new HashMap<>();
+        assertEquals(employeeBook.size() , 0);
+        employeeBook = new EmployeeBook();
     }
 
     @Test
     void findEmployee()
     {
-        Employee employee = new Employee("Qqq", "Www");
-        EmployeeBook.employees.put("Qqq Www", employee);
-        Employee.count ++;
+        Employee employee = employeeService.addEmployee("Qqq", "Www");
         assertThrows(BadRequestException.class, () -> employeeService.findEmployee("1", "Www"));
         assertThrows(BadRequestException.class, () -> employeeService.findEmployee(null, "Www"));
         assertThrows(BadRequestException.class, () -> employeeService.findEmployee("Qqq", "  "));
         assertThrows(BadRequestException.class, () -> employeeService.findEmployee("Qqq", ""));
         Employee foundEmployee = employeeService.findEmployee("Qqq", "Www");
         assertEquals(employee, foundEmployee);
-        Employee.count = 0;
-        EmployeeBook.employees = new HashMap<>();
+        employeeBook = new EmployeeBook();
     }
 
     @Test
-    void printEmployees()
+    void getEmployees()
     {
-        EmployeeBook.employees.put("Qqq Www", new Employee("Qqq", "Www"));
-        EmployeeBook.employees.put("Aaa Sss", new Employee("Aaa", "Sss"));
-        Employee.count += 2;
-        List<Employee> list = EmployeeBook.employees.values().stream().collect(Collectors.toList());
-        List<Employee> listToTest = employeeService.printEmployees();
+        Employee employee2 = employeeService.addEmployee("Aaa", "Sss");
+        Employee employee1 = employeeService.addEmployee("Qqq", "Www");
+        List<Employee> list = Arrays.asList(new Employee[]{employee2, employee1});
+//        System.out.println(list);
+        List<Employee> listToTest = employeeService.getEmployees();
+//        System.out.println(listToTest);
         assertNotNull(listToTest);
-        assertEquals(list, listToTest);
-        Employee.count = 0;
-        EmployeeBook.employees = new HashMap<>();
+        assertIterableEquals(list, listToTest);
+        employeeBook = new EmployeeBook();
     }
 }

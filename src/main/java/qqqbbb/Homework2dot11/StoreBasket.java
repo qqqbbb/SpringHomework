@@ -5,11 +5,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Component
 @SessionScope
-
 public class StoreBasket
 {
 //    @Autowired
@@ -21,7 +21,7 @@ public class StoreBasket
 
     public List<Integer> getItems()
     {
-        return itemIDs;
+        return Collections.unmodifiableList(itemIDs);
     }
 
     public void addItems(List<Integer> itemIDs)

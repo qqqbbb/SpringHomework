@@ -24,7 +24,7 @@ public class EmployeeService
             throw new RuntimeException("No employees in department " + department);
 
 //            System.out.println(employee.getFullName() + " from " + department + " department is on the highest monthly salary of " + employee.getSalary());
-        return employees.get(employees.size() -1);
+        return employees.get(employees.size() - 1);
     }
 
     public Employee getEmployeeWithLowestSalaryInDepartment(int department)
@@ -100,6 +100,7 @@ public class EmployeeService
         Employee.count ++;
         return newEmployee;
     }
+
 
     public Employee removeEmployee(String firstName, String lastName)
     {
