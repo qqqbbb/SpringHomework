@@ -1,13 +1,9 @@
 package qqqbbb.Homework2dot13;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
@@ -16,7 +12,7 @@ class EmployeeServiceTest
 {
 //    @Mock
     EmployeeBook employeeBook = new EmployeeBook();
-    private final EmployeeService employeeService = new EmployeeService(employeeBook);
+    private final EmployeeServiceImpl employeeService = new EmployeeServiceImpl(employeeBook);
 
     @Test
     void addEmployee()
@@ -62,7 +58,7 @@ class EmployeeServiceTest
     {
         Employee employee2 = employeeService.addEmployee("Aaa", "Sss");
         Employee employee1 = employeeService.addEmployee("Qqq", "Www");
-        List<Employee> list = Arrays.asList(new Employee[]{employee2, employee1});
+        List<Employee> list = Arrays.asList(employee2, employee1);
 //        System.out.println(list);
         List<Employee> listToTest = employeeService.getEmployees();
 //        System.out.println(listToTest);

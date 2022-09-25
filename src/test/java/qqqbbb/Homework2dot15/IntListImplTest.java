@@ -88,14 +88,19 @@ class IntListImplTest
     @Test
     void testBinarySearch()
     {
-        int toFind = 7;
+//        int toFind = 7;
 //        int[] arrayToTest = createArray(100);
         int[] arrayToTest = new int[]{1, 2, 3, 5, 5, 5, 7, 8, 9, 10};
         IntListImpl intList = new IntListImpl(arrayToTest);
 //        intList.insertionSort();
-        System.out.println("indexOf " + toFind + " is " + intList.indexOf(toFind));
-        System.out.println(intList);
-        intList.binarySearch(toFind);
+//        System.out.println("indexOf " + toFind + " is " + intList.indexOf(toFind));
+//        System.out.println(intList);
+        assertEquals(intList.binarySearch(1), 0);
+        assertEquals(intList.binarySearch(2), 1);
+        assertEquals(intList.binarySearch(5), 5);
+        assertEquals(intList.binarySearch(9), 8);
+        assertEquals(intList.binarySearch(10), 9);
+//        intList.binarySearch(5);
     }
 
     @Test

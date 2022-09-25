@@ -10,9 +10,9 @@ import java.util.List;
 @RestController
 public class EmployeeController
 {
-    final private EmployeeService employeeService;
+    final private EmployeeServiceImpl employeeService;
 
-    public EmployeeController(EmployeeService employeeService)
+    public EmployeeController(EmployeeServiceImpl employeeService)
     {
         this.employeeService = employeeService;
     }

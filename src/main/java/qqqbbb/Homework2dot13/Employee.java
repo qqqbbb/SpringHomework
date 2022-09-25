@@ -55,7 +55,9 @@ public class Employee
 
     public String getFullName()
     {
-//        return getFirstName() + ' ' + getLastName();
+        if (getMiddleName() == null)
+            return getFirstName() + ' ' + getLastName();
+
         return getFirstName() + ' ' + getMiddleName() + ' ' + getLastName();
     }
 

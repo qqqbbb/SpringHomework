@@ -257,6 +257,7 @@ public class IntListImpl implements IntList
         int middle = size / 2;
         int searchStartIndex = -1;
         int searchEndIndex = -1;
+        System.out.println();
         System.out.println("binary search start " + intToFind);
 //        System.out.println("binary search start  middle " + middle);
 
@@ -288,8 +289,8 @@ public class IntListImpl implements IntList
             }
             if (array[middle] == intToFind)
             {
-                System.out.println("found " + intToFind);
-                return intToFind;
+                System.out.println(intToFind + " found at index " + middle);
+                return middle;
             }
             if (searchEndIndex == middle)
             {
@@ -298,6 +299,7 @@ public class IntListImpl implements IntList
             }
             System.out.println();
         }
+        System.out.println("did not find");
         return -1;
     }
 }

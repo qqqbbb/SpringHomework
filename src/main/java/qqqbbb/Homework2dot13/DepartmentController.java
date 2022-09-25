@@ -11,9 +11,9 @@ import java.util.List;
 @RequestMapping("/departments")
 public class DepartmentController
 {
-    final private DepartmentService departmentService;
+    final private DepartmentServiceImpl departmentService;
 
-    public DepartmentController(DepartmentService departmentService)
+    public DepartmentController(DepartmentServiceImpl departmentService)
     {
         this.departmentService = departmentService;
     }
@@ -36,10 +36,10 @@ public class DepartmentController
         return departmentService.getAllEmployeesInDepartment(department);
     }
 
-    @GetMapping(path="/all")
-    public List<Employee> getAllEmployees()
-    {
-        return departmentService.getAllEmployees();
-    }
+//    @GetMapping(path="/all")
+//    public List<Employee> getAllEmployees()
+//    {
+//        return departmentService.;
+//    }
 
 }
