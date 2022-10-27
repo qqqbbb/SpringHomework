@@ -51,11 +51,8 @@ public class HouseController
     @DeleteMapping("{id}")
     public ResponseEntity deleteHouse(@PathVariable Long id)
     {
-        House house = houseService.deleteHouse(id);
-        if (house == null)
-            return ResponseEntity.notFound().build();
-
-        return ResponseEntity.ok(house);
+        houseService.deleteHouse(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/color/{color}")

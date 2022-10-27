@@ -2,51 +2,41 @@ package qqqbbb.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
 import qqqbbb.hogwarts.school.model.House;
+import qqqbbb.hogwarts.school.repository.HouseRepository;
 import java.util.*;
 
 @Service
 public class HouseService
 {
-    private Map<Long, House> houses = new HashMap<>();
-    private long count = 0;
+    private final HouseRepository repository;
+
+    public HouseService(HouseRepository repository)
+    {
+        this.repository = repository;
+    }
 
     public House addHouse(House house)
     {
-        if (houses.containsValue(house))
-            return null;
-
-        houses.put(house.getId(), house);
-        count++;
-        return house;
+        return repository.save(house);
     }
 
     public House getHouse(long id)
     {
-        return houses.get(id);
+        return repository.findById(id).get();
     }
 
     public House editHouse(House house)
     {
-        if (!houses.containsKey(house.getId()))
-            return null;
-
-        houses.put(house.getId(), house);
-        return house;
+        return repository.save(house);
     }
 
-    public House deleteHouse(long id)
+    public void deleteHouse(long id)
     {
-        House house = houses.get(id);
-        if (houses.containsKey(id))
-        {
-            houses.remove(id);
-            count--;
-        }
-        return house;
+        repository.deleteById(id);
     }
 
     public Collection<House> getAllHouses()
     {
-        return new ArrayList<>(houses.values());
+        return repository.findAll();
     }
 }
